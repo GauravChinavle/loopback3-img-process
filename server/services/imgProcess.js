@@ -60,7 +60,7 @@ function extractText(callback) {                            //To extract the tex
     .catch(err => callback(err));
 }
 
-function saveToFile(arg1,callback){
+function saveToFile(arg1,callback){                 // save extracted text to file
   try{
     const srcPath = path.join(__dirname, downloadPath,replaceExt(fileData.originalname, '.text'));
     fs.writeFileSync(srcPath, arg1);
