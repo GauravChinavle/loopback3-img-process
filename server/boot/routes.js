@@ -6,11 +6,20 @@ module.exports = function(app) {
 
   router.post("/upload", upload.single("image"), async function(req, res) {
     var fileData = req.file;
-    let message ='';
-    if(imgProcess(fileData)) message+='error occured.';
-    res.send({
-      message: message || "Your text extracted from image",
-    });
+    let message = "";
+    await imgProcess(fileData)
+      .then(item =>
+        res.send({
+          message: "Your text extracted from image",
+          text: item
+        })
+      )
+      .catch(err =>
+        res.send({
+          message: "Error occured "
+        })
+      );
+    //if(imgProcess(fileData)) message+='error occured.';
   });
 
   router.get("/test", function(req, res) {

@@ -10,17 +10,17 @@ var fileData = "";
 
 const imgProcess = file => {
   fileData = file;
-  async.series(autoFunc, (err, result) => {
+  return new Promise((resolve,reject)=>{async.series(autoFunc, (err, result) => {
     if (!err) {
-      console.log("Extracted text : " + result[3]);
-      return true;
+      resolve(result[3])
+      
     }else{
-      return false
+      reject(err)
     }
-  });
+  });})
 };
 
-function ifExists(callback) {
+function ifExists(callback) {                       //To check if the file exists
   console.log("Checking if file is present...");
   if (fs.existsSync(fileData.filename)) {
     console.log("The file does not exist.");
@@ -29,7 +29,7 @@ function ifExists(callback) {
     callback(null);
   }
 }
-function isImageFile(callback) {
+function isImageFile(callback) {                      //To check if the input file is Image
   console.log("Checking if file is image...");
   const dstPath = path.join(__dirname, uploadPath, fileData.originalname);
   if (isImage(fileData.originalname)) {
@@ -41,7 +41,7 @@ function isImageFile(callback) {
   }
 }
 
-function renameFile(callback) {
+function renameFile(callback) {                         //To change the file name to original file name
   console.log("Renaming file.....");
   const srcPath = path.join(__dirname, uploadPath, fileData.filename);
   const dstPath = path.join(__dirname, uploadPath, fileData.originalname); // Outputs '/a/b'
@@ -50,7 +50,7 @@ function renameFile(callback) {
   console.log("Renaming done.");
   callback(null);
 }
-function extractText(callback) {
+function extractText(callback) {                            //To extract the text from the given image
   Tesseract.recognize(fileData.actualPath, "eng")
     .then(({ data: { text } }) => {
       callback(null, text);
