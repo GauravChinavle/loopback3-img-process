@@ -16,7 +16,7 @@ module.exports = function(app) {
       )
       .catch(err =>
         res.send({
-          message: "Error occured "
+          message: "Error : "+err
         })
       );
     //if(imgProcess(fileData)) message+='error occured.';

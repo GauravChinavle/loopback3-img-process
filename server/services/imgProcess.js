@@ -3,16 +3,19 @@ var path = require("path");
 const fs = require("fs");
 const Tesseract = require("tesseract.js");
 const isImage = require("is-image");
+var replaceExt = require('replace-ext');
 
 const uploadPath = `../../uploads/`;
-const autoFunc = [ifExists, isImageFile, renameFile, extractText];
+const downloadPath = `../../uploads/docs/`;
+const autoFunc = [ifExists, isImageFile, renameFile, extractText,saveToFile];
 var fileData = "";
 
 const imgProcess = file => {
   fileData = file;
-  return new Promise((resolve,reject)=>{async.series(autoFunc, (err, result) => {
+  return new Promise((resolve,reject)=>{async.waterfall(autoFunc, (err, result) => {
     if (!err) {
-      resolve(result[3])
+      console.log("result",result)
+      resolve(result)
       
     }else{
       reject(err)
@@ -31,7 +34,6 @@ function ifExists(callback) {                       //To check if the file exist
 }
 function isImageFile(callback) {                      //To check if the input file is Image
   console.log("Checking if file is image...");
-  const dstPath = path.join(__dirname, uploadPath, fileData.originalname);
   if (isImage(fileData.originalname)) {
     console.log("The file is image.");
     callback(null);
@@ -56,6 +58,19 @@ function extractText(callback) {                            //To extract the tex
       callback(null, text);
     })
     .catch(err => callback(err));
+}
+
+function saveToFile(arg1,callback){
+  try{
+    const srcPath = path.join(__dirname, downloadPath,replaceExt(fileData.originalname, '.text'));
+    fs.writeFileSync(srcPath, arg1);
+    console.log("Text written to text")
+    callback(null,arg1);
+  }
+  catch(err){
+    console.log(err);
+    callback('Error writing file')
+  }
 }
 
 module.exports = imgProcess;
