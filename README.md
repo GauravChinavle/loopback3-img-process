@@ -1,7 +1,7 @@
 # Image processing app using Loopback 3.x and Async module 
 
 ### Description
-This project proccess as following : 
+This project processes as following : 
 - Uploads image through _multer_
 - Check if that file exists
 - Checks if that file is Image using _is-image_
